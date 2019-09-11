@@ -14,9 +14,12 @@
     "morgan": "~1.9.1",
     "mysql2": "^1.7.0",
     "sequelize": "^5.18.4",
-    "sequelize-cli": "^5.5.1"
+    "sequelize-cli": "^5.5.1",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.0.7"
   },
   "devDependencies": {
+    "forever": "^1.0.0",
     "prettier": "^1.18.2"
   }
 }
