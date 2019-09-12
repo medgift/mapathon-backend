@@ -3,42 +3,38 @@ var router = express.Router();
 
 /**
  * @swagger
- *
- components:
-   schemas:
-     User:
-       type: object
-       required:
-       - username
-       - password
-       - email
-       properties:
-       id:
-       type: integer
-       format: int64
-       username:
-       type: string
-       example: 'jsnow'
-       firstName:
-       type: string
-       example: 'Jon'
-       lastName:
-       type: string
-       example: 'Snow'
-       email:
-       type: string
-       example: 'jsnow@winterfell.org'
-       password:
-       type: string
-       phone:
-       type: string
-       userStatus:
-       type: integer
-       format: int32
-       description: User Status
+ * tags:
+ *  name: User
+ *  description: All routes concerning users (login, logout, etc.)
  */
 
-/* GET users listing. */
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    User:
+ *      type: object
+ *      properties:
+ *        githubId:
+ *          type: integer
+ *          format: in64
+ */
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     tags:
+ *      - User
+ *     description: Returns currently logged-in user
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: users
+ *         schema:
+ *          $ref: '#/components/schemas/User'
+ */
 router.get("/", function(req, res, next) {
   res.send("respond with a resource");
 });

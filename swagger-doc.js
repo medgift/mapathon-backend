@@ -1,8 +1,9 @@
 const swaggerUi = require("swagger-ui-express");
-const swaggeJsdoc = require("swagger-jsdoc");
+const swaggeJSdoc = require("swagger-jsdoc");
 
 const options = {
-  swaggerDefinition: {
+  definition: {
+    openapi: "3.0.0",
     info: {
       title: "Mapathon API",
       version: "1.0.0",
@@ -13,7 +14,7 @@ const options = {
   apis: ["routes/*.js"]
 };
 
-const specs = swaggeJsdoc(options);
+const specs = swaggeJSdoc(options);
 
 module.exports = app => {
   app.use("/", swaggerUi.serve, swaggerUi.setup(specs));

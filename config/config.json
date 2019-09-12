@@ -1,0 +1,11 @@
+{
+  "development": {
+    "dialect": "sqlite",
+    "storage": "data/mapathon.sqlite",
+    "operatorsAliases": false
+  },
+  "production": {
+    "use_env_variable" : "DB_HOST",
+    "operatorsAliases": false
+  }
+}
