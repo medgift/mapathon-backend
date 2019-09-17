@@ -5,13 +5,11 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const swaggerDoc = require("./swagger-doc");
 const cors = require("cors");
+const jwt = require("express-jwt");
+const jwks = require("jwks-rsa");
 
-const authRouter = require("./routes/auth");
 const poiRouter = require("./routes/poi");
 const userRouter = require("./routes/user");
-
-const isAuthenticated = require("./middleware/isAuthenticated");
-const wantsJSON = require("./middleware/wantsJSON");
 
 const models = require("./models");
 
@@ -23,39 +21,24 @@ const app = express();
 // CORS
 app.use(cors());
 
-// Wants JSON
-app.use((req, res, next) => {
-  req.wantsJSON = wantsJSON;
-  next();
+// set up JWT checking
+
+const authConfig = {
+  domain: "dev-mapathon.eu.auth0.com",
+  audience: "https://mapathon.ehealth.hevs.ch"
+};
+
+const jwtCheck = jwt({
+  secret: jwks.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 10,
+    jwksUri: `https://${authConfig.domain}/.well-known/jwks.json`
+  }),
+  audience: authConfig.audience,
+  issuer: `https://${authConfig.domain}/`,
+  algorithms: ["RS256"]
 });
-
-// passport setup
-const passport = require("passport");
-const GitHubStrategy = require("passport-github2").Strategy;
-
-passport.use(
-  new GitHubStrategy(
-    {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/github/callback",
-      scope: ["user"]
-    },
-    async function(accessToken, refreshToken, profile, done) {
-      try {
-        let [user, created] = await models.User.findOrCreate({
-          where: { githubId: profile.id }
-        });
-        return done(undefined, user);
-      } catch (err) {
-        return done(err);
-      }
-    }
-  )
-);
-
-// Initialize Passport!
-app.use(passport.initialize());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -67,11 +50,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/auth", authRouter);
-
-app.use(isAuthenticated);
-app.use("/poi", poiRouter);
-app.use("/users", userRouter);
+app.use("/poi", jwtCheck, poiRouter);
+app.use("/user", jwtCheck, userRouter);
 
 // set up swagger doc
 swaggerDoc(app);

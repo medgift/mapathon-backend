@@ -1,5 +1,5 @@
 const swaggerUi = require("swagger-ui-express");
-const swaggeJSdoc = require("swagger-jsdoc");
+const swaggerJSdoc = require("swagger-jsdoc");
 
 const options = {
   definition: {
@@ -11,11 +11,20 @@ const options = {
     },
     basePath: "/"
   },
+  servers: {
+    url: "http://localhost:4000"
+  },
   apis: ["routes/*.js"]
 };
 
-const specs = swaggeJSdoc(options);
+const specs = swaggerJSdoc(options);
+
+let uiOptions = {
+  swaggerOptions: {
+    supportedSubmitMethods: []
+  }
+};
 
 module.exports = app => {
-  app.use("/", swaggerUi.serve, swaggerUi.setup(specs));
+  app.use("/", swaggerUi.serve, swaggerUi.setup(specs, uiOptions));
 };
