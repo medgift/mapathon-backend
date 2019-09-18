@@ -3,8 +3,9 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const swaggerDoc = require("./swagger-doc");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
 const jwt = require("express-jwt");
 const jwks = require("jwks-rsa");
 
@@ -22,7 +23,6 @@ const app = express();
 app.use(cors());
 
 // set up JWT checking
-
 const authConfig = {
   domain: "mapathon.eu.auth0.com",
   audience: "https://backend.mapathon.ehealth.hevs.ch"
@@ -53,8 +53,22 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/poi", jwtCheck, poiRouter);
 app.use("/user", jwtCheck, userRouter);
 
-// set up swagger doc
-swaggerDoc(app);
+// server Swagger Doc
+let uiOptions = {
+  swaggerOptions: {
+    //supportedSubmitMethods: []
+    oauth: {
+      clientId: process.env.OAUTH2_CLIENT_ID,
+      clientSecret: process.env.OAUTH2_CLIENT_SECRET,
+      scopeSeparator: ",",
+      additionalQueryStringParams: {}
+    }
+  }
+};
+
+const swaggerDocument = YAML.load("./swagger.yml");
+
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument, uiOptions));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: Mapathon API
+  version: 1.0.0
+  description: REST API for the Mapathon project (645-1)
+servers:
+  - description: Local server
+    url: http://localhost:4000
+  - description: Production server
+    url: https://backend.mapathon.ehealth.hevs.ch
+tags:
+  - name: POI
+    description: All routes concerning POIs (listing, creating, etc.)
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://mapathon.eu.auth0.com/authorize
+          tokenUrl: https://mapathon.eu.auth0.com/oauth/token
+  schemas:
+    POI:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        lat:
+          type: number
+security:
+  - OAuth2:
+      - profile
+paths:
+  /poi:
+    get:
+      tags:
+        - POI
+      description: Returns all POIs
+      responses:
+        200:
+          description: An array of POIs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/POI'
