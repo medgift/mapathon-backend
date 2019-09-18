@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     "Tag",
     {
       name: DataTypes.STRING,
-      image: DataTypes.STRING
+      image: DataTypes.STRING,
+      color: DataTypes.STRING
     },
     {}
   );

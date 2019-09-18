@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.TEXT,
       lat: DataTypes.FLOAT(10, 6),
       lng: DataTypes.FLOAT(10, 6),
-      image: DataTypes.STRING
+      image: DataTypes.STRING,
+      url: DataTypes.STRING
     },
     {}
   );
@@ -17,14 +18,14 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "creator",
       foreignKey: "creatorId"
     });
-    POI.belongsTo(models.Status, { foreignKey: "statusId" });
-    POI.belongsTo(models.GPXFile, { foreignKey: "gpxFileId" });
-    POI.belongsToMany(models.Tag, {
-      through: "POITag"
-    });
     POI.belongsToMany(models.Category, {
       through: "POICategory"
     });
+    POI.belongsToMany(models.Tag, {
+      through: "POITag"
+    });
+    POI.belongsTo(models.Status, { foreignKey: "statusId" });
+    POI.belongsTo(models.GPXFile, { foreignKey: "gpxFileId" });
   };
   return POI;
 };

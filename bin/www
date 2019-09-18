@@ -10,9 +10,14 @@ const http = require("http");
 
 const models = require("../models");
 
+const populate = require("../utils/data-populator");
+
 async function setupDB() {
   /* Set up DB */
   var dbSync = await models.sequelize.sync({ force: true });
+
+  /* Populate tables */
+  await populate();
 }
 setupDB();
 
