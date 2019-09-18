@@ -24,8 +24,8 @@ app.use(cors());
 // set up JWT checking
 
 const authConfig = {
-  domain: "dev-mapathon.eu.auth0.com",
-  audience: "https://mapathon.ehealth.hevs.ch"
+  domain: "mapathon.eu.auth0.com",
+  audience: "https://backend.mapathon.ehealth.hevs.ch"
 };
 
 const jwtCheck = jwt({
