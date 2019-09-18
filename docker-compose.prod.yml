@@ -2,8 +2,6 @@ version: "3.7"
 
 services:
   server:
-    environment:
-      - TRAEFIK_URL=${TRAEFIK_URL}
     labels:
       - "traefik.backend=${TRAEFIK_BACKEND}"
       - "traefik.docker.network=prod"
