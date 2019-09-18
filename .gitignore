@@ -73,3 +73,6 @@ migrations
 
 # Docker
 .env
+
+# Data
+data/

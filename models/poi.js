@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       description: DataTypes.TEXT,
-      status: DataTypes.STRING,
       lat: DataTypes.FLOAT(10, 6),
       lng: DataTypes.FLOAT(10, 6),
       image: DataTypes.STRING
@@ -18,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "creator",
       foreignKey: "creatorId"
     });
+    POI.belongsTo(models.Status, { foreignKey: "statusId" });
+    POI.belongsTo(models.GPXFile, { foreignKey: "gpxFileId" });
     POI.belongsToMany(models.Tag, {
       through: "POITag"
     });

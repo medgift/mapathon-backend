@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+var models = require("../models");
 
 /**
  * @swagger
@@ -34,9 +35,11 @@ var router = express.Router();
  *         schema:
  *          $ref: '#/components/schemas/POI'
  */
-router.get("/", function(req, res, next) {
+router.get("/", async function(req, res, next) {
+  let pois = await models.POI.findAll({ raw: true });
+
   let response = {
-    data: ["a POI"]
+    data: pois
   };
 
   res.send(response);
