@@ -36,7 +36,9 @@ var models = require("../models");
  *          $ref: '#/components/schemas/POI'
  */
 router.get("/", async function(req, res, next) {
-  let pois = await models.POI.findAll({ raw: true });
+  let pois = await models.POI.findAll({
+    include: [models.User, models.Status, models.Category, models.Tag]
+  });
 
   let response = {
     data: pois
