@@ -8,6 +8,7 @@ const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const jwt = require("express-jwt");
 const jwks = require("jwks-rsa");
+const basicAuth = require("express-basic-auth");
 
 const poiRouter = require("./routes/poi");
 const userRouter = require("./routes/user");
@@ -68,7 +69,19 @@ let uiOptions = {
 
 const swaggerDocument = YAML.load("./swagger.yml");
 
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument, uiOptions));
+let basicAuthMiddleware = basicAuth({
+  users: {
+    [process.env.BASIC_AUTH_USER]: process.env.BASIC_AUTH_PASS
+  },
+  challenge: true
+});
+
+app.use(
+  "/",
+  basicAuthMiddleware,
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, uiOptions)
+);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
