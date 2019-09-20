@@ -20,28 +20,208 @@ components:
           authorizationUrl: https://mapathon.eu.auth0.com/authorize
           tokenUrl: https://mapathon.eu.auth0.com/oauth/token
   schemas:
-    POI:
+    BaseModel:
       type: object
       properties:
+        id:
+          type: number
+        createdAt:
+          type: string
+          format: "date-time"
+          example: 2019-09-19T13:08:54.042Z
+        updatedAt:
+          type: string
+          format: "date-time"
+          example: 2019-09-19T13:08:54.042Z
+    POI:
+      allOf:
+        - $ref: "#/components/schemas/BaseModel"
+        - type: object
+          required:
+            - name
+            - description
+            - lat
+            - lng
+          properties:
+            name:
+              type: string
+              example: Techno-Pôle
+            description:
+              type: string
+              example: People are working hard here
+            lat:
+              type: number
+              example: 46.2828233
+            lng:
+              type: number
+              example: 7.5387541
+            image:
+              type: string
+              example: http://www.technopole.ch/plugin/page/theme/T1/image/logo.jpg
+            url:
+              type: string
+              example: http://technopole.ch
+            Creator:
+              $ref: "#/components/schemas/User"
+            Status:
+              $ref: "#/components/schemas/Status"
+            Categories:
+              type: array
+              items:
+                $ref: "#/components/schemas/Category"
+            Tags:
+              type: array
+              items:
+                $ref: "#/components/schemas/Tag"
+            GPXFile:
+              $ref: "#/components/schemas/GPXFile"
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'github|123456'
         name:
           type: string
-        description:
+          example: 'Thomas Shelby'
+        picture:
           type: string
-        lat:
-          type: number
+          format: uri
+          example: 'https://placehold.it/200?text=Thomas'
+        email:
+          type: string
+          format: email
+          example: 't.shelby@pb.co.uk'
+    Status:
+      allOf:
+        - $ref: "#/components/schemas/BaseModel"
+        - type: object
+          required:
+            - name
+          properties:
+            name:
+              type: string
+              example: Not Verified
+    Category:
+      allOf:
+        - $ref: "#/components/schemas/BaseModel"
+        - type: object
+          required:
+            - name
+          properties:
+            name:
+              type: string
+              example: Business
+            image:
+              type: string
+              example: https://fast.hevs.ch/temp/map-icons/company.png
+    Tag:
+      allOf:
+        - $ref: "#/components/schemas/BaseModel"
+        - type: object
+          required:
+            - name
+          properties:
+            name:
+              type: string
+              example: Popular
+            color:
+              type: string
+              example: "#c0c999"
+            image:
+              type: string
+              example: https://fast.hevs.ch/temp/map-tags/star.svg
+    GPXFile:
+      allOf:
+        - $ref: "#/components/schemas/BaseModel"
+        - type: object
+          required:
+            - path
+            - url
+          properties:
+            path:
+              type: string
+              example: /path/to/the/gpx/file/on/the/server.gpx
+            url:
+              type: string
+              example: https://my.server.com/url/of/the/gpx/file.gpx
 security:
   - OAuth2:
-      - profile
+      - openid
 paths:
   /poi:
     get:
       tags:
         - POI
-      description: Returns all POIs
+      description: Return all POIs
       responses:
         200:
           description: An array of POIs
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/POI'
+                type: array
+                items:
+                  $ref: "#/components/schemas/POI"
+    post:
+      tags:
+        - POI
+      description: Create a new POI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/POI"
+            examples:
+              minimal:
+                description: The minimum required payload for creating a new POI
+                value:
+                  name: 'ABC'
+                  description: 'Description of ABC'
+                  lat: 46.1234567
+                  lng: 7.1234567
+      responses:
+        200:
+          description: The newly created POI
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/POI"
+  /poi/{id}:
+    get:
+      tags:
+        - POI
+      description: Return the POI with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The POI with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/POI"
+    delete:
+      tags:
+        - POI
+      description: Delete the POI with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The deleted POI
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/POI"

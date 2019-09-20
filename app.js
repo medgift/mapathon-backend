@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const express = require("express");
+require("express-async-errors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -96,7 +97,14 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+
+  let response = {
+    message: err.message
+  };
+
+  console.error(err);
+
+  res.json(response);
 });
 
 module.exports = app;

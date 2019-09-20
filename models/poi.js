@@ -3,21 +3,30 @@ module.exports = (sequelize, DataTypes) => {
   const POI = sequelize.define(
     "POI",
     {
-      name: DataTypes.STRING,
-      description: DataTypes.TEXT,
-      lat: DataTypes.FLOAT(10, 6),
-      lng: DataTypes.FLOAT(10, 6),
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      lat: {
+        type: DataTypes.FLOAT(10, 6),
+        allowNull: false
+      },
+      lng: {
+        type: DataTypes.FLOAT(10, 6),
+        allowNull: false
+      },
       image: DataTypes.STRING,
-      url: DataTypes.STRING
+      url: DataTypes.STRING,
+      creatorId: DataTypes.STRING
     },
     {}
   );
   POI.associate = function(models) {
     // associations can be defined here
-    POI.belongsTo(models.User, {
-      modelName: "creator",
-      foreignKey: "creatorId"
-    });
     POI.belongsToMany(models.Category, {
       through: "POICategory"
     });
