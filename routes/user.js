@@ -1,42 +1,11 @@
 var express = require("express");
 var router = express.Router();
+const auth0UserInfo = require("../auth0/user-info");
 
-/**
- * @swagger
- * tags:
- *  name: User
- *  description: All routes concerning users (login, logout, etc.)
- */
+router.get("/", async function(req, res, next) {
+  let users = await auth0UserInfo.getAllUsers();
 
-/**
- * @swagger
- * components:
- *  schemas:
- *    User:
- *      type: object
- *      properties:
- *        githubId:
- *          type: integer
- *          format: in64
- */
-
-/**
- * @swagger
- * /user:
- *   get:
- *     tags:
- *      - User
- *     description: Returns currently logged-in user
- *     produces:
- *      - application/json
- *     responses:
- *       200:
- *         description: users
- *         schema:
- *          $ref: '#/components/schemas/User'
- */
-router.get("/", function(req, res, next) {
-  res.send("respond with a resource");
+  res.send(users);
 });
 
 module.exports = router;
