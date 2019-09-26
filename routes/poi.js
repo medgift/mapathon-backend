@@ -58,7 +58,10 @@ router.get("/:id", async function(req, res, next) {
       .send({ error: { status: 404, title: "This POI does not exist" } });
   }
 
-  res.send(poi);
+  let poiCreator = await auth0UserInfo.getUserInfo(poi.creatorId);
+  let decoratedPOI = await decoratePOI(poi, poiCreator);
+
+  res.send(decoratedPOI);
 });
 
 // Create a new POI
@@ -76,7 +79,6 @@ router.patch("/:id", isCreator, async function(req, res, next) {
   let updatedPOI = await poiToUpdate.update(poiBody);
 
   let poiCreator = await auth0UserInfo.getUserInfo(updatedPOI.creatorId);
-
   let decoratedPOI = await decoratePOI(updatedPOI, poiCreator);
 
   res.send(decoratedPOI);
@@ -89,7 +91,6 @@ router.delete("/:id", isCreator, async function(req, res, next) {
   let deletedPOI = await poiToDelete.destroy();
 
   let poiCreator = await auth0UserInfo.getUserInfo(poiToDelete.creatorId);
-
   let decoratedPOI = await decoratePOI(poiToDelete, poiCreator);
 
   res.send(decoratedPOI);
