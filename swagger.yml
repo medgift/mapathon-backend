@@ -20,6 +20,18 @@ components:
           authorizationUrl: https://mapathon.eu.auth0.com/authorize
           tokenUrl: https://mapathon.eu.auth0.com/oauth/token
   schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            status:
+              type: number
+              description: The HTTP status error code
+            title:
+              type: string
+              description: The error message
     BaseModel:
       type: object
       properties:
@@ -145,6 +157,19 @@ components:
             url:
               type: string
               example: https://my.server.com/url/of/the/gpx/file.gpx
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
 security:
   - OAuth2:
       - openid
@@ -175,12 +200,21 @@ paths:
               $ref: "#/components/schemas/POI"
             examples:
               minimal:
-                description: The minimum required payload for creating a new POI
+                description: The minimum required payload for creating a new POI (Creator is based on the user sending the request)
                 value:
                   name: 'ABC'
                   description: 'Description of ABC'
                   lat: 46.1234567
                   lng: 7.1234567
+              complete:
+                description: A fully configured POI
+                value:
+                  name: 'XYZ'
+                  description: 'Description of XYZ'
+                  lat: 46.2345678
+                  lng: 7.2345678
+                  image: 'http://image/related/to/the/poi.png'
+                  url: 'http://link.related.to/the/poi'
       responses:
         200:
           description: The newly created POI
@@ -207,6 +241,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/POI"
+    patch:
+      tags:
+        - POI
+      description: Create a new POI
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to update
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/POI"
+            examples:
+              partial:
+                description: Only update a given field
+                value:
+                  name: 'Updated Name'
+              full:
+                description: Full POI object supplied
+                value:
+                  name: 'ABC'
+                  description: 'Description of ABC'
+                  lat: 46.1234567
+                  lng: 7.1234567
+      responses:
+        200:
+          description: The updated POI
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/POI"
+        404:
+          description: The given POI was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this POI is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
     delete:
       tags:
         - POI
@@ -214,7 +296,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: The ID of the POI to fetch
+          description: The ID of the POI to delete
           required: true
           schema:
             type: number
@@ -225,3 +307,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/POI"
+        404:
+          description: The given POI was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The deletion of this POI is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
