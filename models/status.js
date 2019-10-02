@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
   const Status = sequelize.define(
     "Status",
     {
-      name: DataTypes.STRING
+      name: DataTypes.STRING,
+      creatorId: DataTypes.STRING
     },
     {}
   );

@@ -124,6 +124,8 @@ components:
             name:
               type: string
               example: Not Verified
+            Creator:
+              $ref: "#/components/schemas/User"
     Category:
       allOf:
         - $ref: "#/components/schemas/BaseModel"
@@ -137,6 +139,8 @@ components:
             image:
               type: string
               example: https://fast.hevs.ch/temp/map-icons/company.png
+            Creator:
+              $ref: "#/components/schemas/User"
     Tag:
       allOf:
         - $ref: "#/components/schemas/BaseModel"
@@ -153,6 +157,8 @@ components:
             image:
               type: string
               example: https://fast.hevs.ch/temp/map-tags/star.svg
+            Creator:
+              $ref: "#/components/schemas/User"
     GPXFile:
       allOf:
         - $ref: "#/components/schemas/BaseModel"
@@ -167,6 +173,8 @@ components:
             url:
               type: string
               example: https://my.server.com/url/of/the/gpx/file.gpx
+            Creator:
+              $ref: "#/components/schemas/User"
   responses:
     NotFound:
       description: The specified resource was not found
@@ -176,6 +184,12 @@ components:
             $ref: '#/components/schemas/Error'
     Forbidden:
       description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -362,3 +376,543 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+  /status:
+    get:
+      tags:
+        - Status
+      description: Return all Statuses
+      responses:
+        200:
+          description: An array of Statuses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Status"
+    post:
+      tags:
+        - Status
+      description: Create a new Status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Status"
+            examples:
+              minimal:
+                description: The minimum required payload for creating a new Status (Creator is based on the user sending the request)
+                value:
+                  name: 'Validation In Progress'
+      responses:
+        200:
+          description: The newly created Status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /status/{id}:
+    get:
+      tags:
+        - Status
+      description: Return the Status with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Status to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The Status with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+    patch:
+      tags:
+        - Status
+      description: Update an existing Status
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Status to update
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Status"
+            examples:
+              basic:
+                description: Only update a given field
+                value:
+                  name: 'Updated Status Name'
+      responses:
+        200:
+          description: The updated Status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+        404:
+          description: The given Status was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this Status is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+        - Status
+      description: Delete the Status with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Status to delete
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The deleted Status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+        404:
+          description: The given Status was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The deletion of this Status is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+  /category:
+    get:
+      tags:
+        - Category
+      description: Return all Categories
+      responses:
+        200:
+          description: An array of Categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      tags:
+        - Category
+      description: Create a new Category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Category"
+            examples:
+              minimal:
+                description: The minimum required payload for creating a new Category (Creator is based on the user sending the request)
+                value:
+                  name: 'Pub'
+              complete:
+                description: A more complete payload for creating a new Category (Creator is based on the user sending the request)
+                value:
+                  name: 'Pub'
+                  image: 'http://logo.for.a/pub.png'
+      responses:
+        200:
+          description: The newly created Category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /category/{id}:
+    get:
+      tags:
+        - Category
+      description: Return the Category with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Category to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The Category with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+    patch:
+      tags:
+        - Category
+      description: Update an existing Category
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Category to update
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Category"
+            examples:
+              basic:
+                description: Only update a given field
+                value:
+                  name: 'Updated Category Name'
+      responses:
+        200:
+          description: The updated Category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        404:
+          description: The given Category was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this Category is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+        - Category
+      description: Delete the Category with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Category to delete
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The deleted Category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        404:
+          description: The given Category was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The deletion of this Category is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+  /tag:
+    get:
+      tags:
+        - Tag
+      description: Return all Tags
+      responses:
+        200:
+          description: An array of Tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tag"
+    post:
+      tags:
+        - Tag
+      description: Create a new Tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Tag"
+            examples:
+              minimal:
+                description: The minimum required payload for creating a new Tag (Creator is based on the user sending the request)
+                value:
+                  name: 'Recent'
+              complete:
+                description: A more complete payload for creating a new Tag (Creator is based on the user sending the request)
+                value:
+                  name: 'Recent'
+                  image: 'http://logo.for/recent.png'
+                  color: '#ffcc00'
+      responses:
+        200:
+          description: The newly created Tag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+  /tag/{id}:
+    get:
+      tags:
+        - Tag
+      description: Return the Tag with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Tag to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The Tag with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+    patch:
+      tags:
+        - Tag
+      description: Update an existing Tag
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Tag to update
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Tag"
+            examples:
+              basic:
+                description: Only update a given field
+                value:
+                  name: 'Updated Tag Name'
+      responses:
+        200:
+          description: The updated Tag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        404:
+          description: The given Tag was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this Tag is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+        - Tag
+      description: Delete the Tag with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the Tag to delete
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The deleted Tag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        404:
+          description: The given Tag was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The deletion of this Tag is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+  /gpx-file:
+    get:
+      tags:
+        - GPXFile
+      description: Return all GPX Files
+      responses:
+        200:
+          description: An array of GPXFiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GPXFile"
+    post:
+      tags:
+        - GPXFile
+      description: Create a new GPXFile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: The newly created GPXFile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GPXFile"
+        400:
+          description: The given file was not a valid GPX file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+  /gpx-file/{id}:
+    get:
+      tags:
+        - GPXFile
+      description: Return the GPXFile with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the GPXFile to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The GPXFile with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GPXFile"
+    patch:
+      tags:
+        - GPXFile
+      description: Update an existing GPXFile
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the GPXFile to update
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GPXFile"
+            examples:
+              basic:
+                description: Only update a given field
+                value:
+                  name: 'TODO - CHANGE THIS!!!'
+      responses:
+        200:
+          description: The updated GPXFile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GPXFile"
+        404:
+          description: The given GPXFile was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this GPXFile is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+        - GPXFile
+      description: Delete the GPXFile with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the GPXFile to delete
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: The deleted GPXFile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GPXFile"
+        404:
+          description: The given GPXFile was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The deletion of this GPXFile is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+  /gpx-file/download/{filename}:
+    get:
+      tags:
+        - GPXFile
+      description: Download the GPXFile with the given filename
+      parameters:
+        - name: filename
+          in: path
+          description: The filename of the GPXFile to download
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The requested GPX File
+          content:
+            application/gps+xml:
+              schema:
+                type: string
+                format: binary

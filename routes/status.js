@@ -1,29 +1,13 @@
 var express = require("express");
 var router = express.Router();
-var models = require("../models");
 
 const isCreator = require("../middleware/isCreator");
 
 const crud = require("./crud");
 
-let modelName = "POI";
+let modelName = "Status";
 
-let modelOptions = {
-  include: [
-    models.Status,
-    {
-      model: models.Category,
-      through: { attributes: [] }
-    },
-    {
-      model: models.Tag,
-      through: { attributes: [] }
-    }
-  ],
-  attributes: {
-    exclude: ["statusId", "gpxFileId"]
-  }
-};
+let modelOptions = {};
 
 router.get("/", crud.getAll(modelName, modelOptions));
 

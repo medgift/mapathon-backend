@@ -13,6 +13,10 @@ const basicAuth = require("express-basic-auth");
 
 const poiRouter = require("./routes/poi");
 const userRouter = require("./routes/user");
+const statusRouter = require("./routes/status");
+const categoryRouter = require("./routes/category");
+const tagRouter = require("./routes/tag");
+const gpxFileRouter = require("./routes/gpx-file");
 
 const models = require("./models");
 
@@ -54,6 +58,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/poi", jwtCheck, poiRouter);
 app.use("/user", jwtCheck, userRouter);
+app.use("/status", jwtCheck, statusRouter);
+app.use("/category", jwtCheck, categoryRouter);
+app.use("/tag", jwtCheck, tagRouter);
+app.use("/gpx-file", jwtCheck, gpxFileRouter);
 
 // server Swagger Doc
 let uiOptions = {

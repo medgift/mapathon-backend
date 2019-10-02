@@ -29,6 +29,19 @@ async function getAllUsers() {
 
 module.exports.getAllUsers = getAllUsers;
 
+async function getAllUsersById() {
+  const users = await getAllUsers();
+
+  const usersById = users.reduce((accumulator, user) => {
+    accumulator[user.user_id] = user;
+    return accumulator;
+  }, {});
+
+  return usersById;
+}
+
+module.exports.getAllUsersById = getAllUsersById;
+
 async function getUserInfo(auth0_userid) {
   const userURL = `${process.env.AUTH0_OAUTH2_AUDIENCE}users?q=user_id:${auth0_userid}`;
   const searchResults = await requestWithToken(userURL);

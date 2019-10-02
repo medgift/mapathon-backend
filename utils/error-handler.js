@@ -10,6 +10,14 @@ module.exports.sendNotFound = res => {
   return errorHandler(res, 404, "The desired resource was not found");
 };
 
+module.exports.sendBadRequest = res => {
+  return errorHandler(
+    res,
+    400,
+    "The request does not have the correct format, check your request parameters/body"
+  );
+};
+
 function errorHandler(res, status, error) {
   res.status(status).send({
     error: {
