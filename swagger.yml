@@ -343,6 +343,195 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/Forbidden'
+  /poi/{id}/status:
+    patch:
+      tags:
+        - POI
+      description: Affect a Status to the POI with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to update with a new Status
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Status"
+            examples:
+              partial:
+                description: Only give the ID of the status
+                value: 1
+              full:
+                description: Give a full Status object
+                value:
+                  id: 1
+                  name: 'Not Verified'
+                  createdAt: '2019-10-02T15:14:15.852Z'
+                  updatedAt: '2019-10-02T15:14:15.852Z'
+                  Creator:
+                    id: 'github|123456'
+                    name: 'Thomas Shelby'
+                    picture: 'https://placehold.it/200?text=Thomas'
+                    email: 't.shelby@pb.co.uk'
+
+      responses:
+        200:
+          description: The updated POI
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/POI"
+        404:
+          description: The given POI was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this POI is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+  /poi/{id}/category:
+    patch:
+      tags:
+        - POI
+      description: Affect Categories to the POI with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to update with new Categories
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Category"
+            examples:
+              partial:
+                description: Only give an array of Category IDs
+                value:
+                  [3, 4]
+              full:
+                description: Give an array of full Category Objects
+                value:
+                  - id: 1,
+                    name: Business
+                    image: https://fast.hevs.ch/temp/map-icons/company.png
+                    createdAt: 2019-10-02T15:50:52.055Z
+                    updatedAt: 2019-10-02T15:50:52.055Z
+                    Creator:
+                      id: github|123456
+                      name: Thomas Shelby
+                      picture: https://placehold.it/200?text=Thomas
+                      email: t.shelby@pb.co.uk
+                  - id: 3
+                    name: Restaurant
+                    image: https://fast.hevs.ch/temp/map-icons/restaurant.png
+                    createdAt: 2019-10-02T13:30:52.055Z
+                    updatedAt: 2019-10-02T13:30:52.055Z
+                    Creator:
+                      id: github|123456
+                      name: Thomas Shelby
+                      picture: https://placehold.it/200?text=Thomas
+                      email: t.shelby@pb.co.uk
+      responses:
+        200:
+          description: The updated POI
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/POI"
+        404:
+          description: The given POI was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this POI is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+  /poi/{id}/tag:
+    patch:
+      tags:
+        - POI
+      description: Affect Tags to the POI with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to update with new Tags
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Tag"
+            examples:
+              partial:
+                description: Only give an array of Tag IDs
+                value:
+                  [1]
+              full:
+                description: Give an array of full Category Objects
+                value:
+                  - id: 1,
+                    name: New
+                    image: https://fast.hevs.ch/temp/map-tags/loader.svg
+                    color: green
+                    createdAt: 2019-10-02T16:50:52.055Z
+                    updatedAt: 2019-10-02T16:50:52.055Z
+                    Creator:
+                      id: github|123456
+                      name: Thomas Shelby
+                      picture: https://placehold.it/200?text=Thomas
+                      email: t.shelby@pb.co.uk
+                  - id: 2
+                    name: Popular
+                    image: https://fast.hevs.ch/temp/map-tags/star.svg
+                    createdAt: 2019-10-02T13:40:52.055Z
+                    updatedAt: 2019-10-02T13:40:52.055Z
+                    Creator:
+                      id: github|123456
+                      name: Thomas Shelby
+                      picture: https://placehold.it/200?text=Thomas
+                      email: t.shelby@pb.co.uk
+      responses:
+        200:
+          description: The updated POI
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/POI"
+        404:
+          description: The given POI was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this POI is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
   /user:
     get:
       tags:

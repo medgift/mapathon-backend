@@ -45,6 +45,40 @@ module.exports.updateInstance = function(model, options) {
   };
 };
 
+module.exports.associateInstance = function(model, target, options) {
+  return async function(req, res, next) {
+    let targetId = Number.isInteger(req.body) ? req.body : req.body.id;
+
+    const updatedInstance = await queries.associateInstance(
+      model,
+      +req.params.id,
+      target,
+      targetId,
+      options
+    );
+
+    res.send(updatedInstance);
+  };
+};
+
+module.exports.associateInstances = function(model, target, options) {
+  return async function(req, res, next) {
+    let targetIds = Number.isInteger(req.body[0])
+      ? req.body
+      : req.body.map(targetObject => targetObject.id);
+
+    const updatedInstance = await queries.associateInstances(
+      model,
+      +req.params.id,
+      target,
+      targetIds,
+      options
+    );
+
+    res.send(updatedInstance);
+  };
+};
+
 module.exports.deleteInstance = function(model, options) {
   return async function(req, res, next) {
     const deletedInstance = await queries.deleteInstance(

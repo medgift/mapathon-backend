@@ -37,6 +37,24 @@ router.patch(
   crud.updateInstance(modelName, modelOptions)
 );
 
+router.patch(
+  "/:id/status",
+  isCreator({ model: modelName }),
+  crud.associateInstance(modelName, "Status", modelOptions)
+);
+
+router.patch(
+  "/:id/category",
+  isCreator({ model: modelName }),
+  crud.associateInstances(modelName, "Category", modelOptions)
+);
+
+router.patch(
+  "/:id/tag",
+  isCreator({ model: modelName }),
+  crud.associateInstances(modelName, "Tag", modelOptions)
+);
+
 router.delete(
   "/:id",
   isCreator({ model: modelName }),

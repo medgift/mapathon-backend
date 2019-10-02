@@ -1,6 +1,7 @@
 const formatter = require("../utils/formatter");
 const auth0UserInfo = require("../auth0/user-info");
 const models = require("../models");
+const sequelize = require("sequelize");
 
 async function getAll(model, options) {
   const opts = options || {};
@@ -75,6 +76,34 @@ async function updateInstance(model, id, body, options) {
 }
 
 module.exports.updateInstance = updateInstance;
+
+async function associateInstance(model, id, target, targetId, options) {
+  const opts = options || {};
+
+  let instanceToUpdate = await models[model].findByPk(id, opts);
+
+  await instanceToUpdate[`set${target}`](targetId);
+
+  let updatedInstance = await models[model].findByPk(id, opts);
+
+  return updatedInstance;
+}
+
+module.exports.associateInstance = associateInstance;
+
+async function associateInstances(model, id, target, targetIds, options) {
+  const opts = options || {};
+
+  let instanceToUpdate = await models[model].findByPk(id, opts);
+
+  await instanceToUpdate[`set${sequelize.Utils.pluralize(target)}`](targetIds);
+
+  let updatedInstance = await models[model].findByPk(id, opts);
+
+  return updatedInstance;
+}
+
+module.exports.associateInstances = associateInstances;
 
 async function deleteInstance(model, id, options) {
   const opts = options || {};
