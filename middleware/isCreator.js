@@ -1,26 +1,24 @@
 const models = require("../models");
+const errorHandler = require("../utils/error-handler");
 
-// route middleware to ensure user is logged in
-async function isCreator(req, res, next) {
-  let poi = await models.POI.findByPk(+req.params.id);
+// route middleware to ensure user is the creator of a resource
+module.exports = function(options) {
+  return async function(req, res, next) {
+    // Implement the middleware function based on the options object
+    let model = options.model;
+    let creatorFK = options.creatorFK ? options.creatorFK : "creatorId";
 
-  if (!poi) {
-    return res
-      .status(404)
-      .send({ error: { status: 404, title: "This POI does not exist" } });
-  }
+    let instance = await models[model].findByPk(+req.params.id);
 
-  if (!req.user || req.user.sub !== poi.creatorId) {
-    return res.status(403).send({
-      error: {
-        status: 403,
-        title: "You are not allowed to modify this resource"
-      }
-    });
-  }
+    if (!instance) {
+      return errorHandler.sendNotFound(res);
+    }
 
-  // Everything is fine
-  return next();
-}
+    if (!req.user || req.user.sub !== instance[creatorFK]) {
+      return errorHandler.sendForbidden(res);
+    }
 
-module.exports = isCreator;
+    // Everything is fine
+    next();
+  };
+};

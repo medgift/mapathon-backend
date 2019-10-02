@@ -10,7 +10,17 @@ servers:
     url: https://backend.mapathon.ehealth.hevs.ch
 tags:
   - name: POI
-    description: All routes concerning POIs (listing, creating, etc.)
+    description: All routes concerning Points Of Interest (POIs) (listing, creating, updating, etc.)
+  - name: User
+    description: All routes concerning Users (listing, getting a specific user)
+  - name: Status
+    description: All routes concerning the Status of a POI (listing, creating, updating, etc.)
+  - name: Category
+    description: All routes concerning the Categories of a POI (listing, creating, updating, etc.)
+  - name: Tag
+    description: All routes concerning the Tags of a POI (listing, creating, updating, etc.)
+  - name: GPXFile
+    description: All routes concerning GPX Files associated with a POI (listing, creating, updating, etc.)
 components:
   securitySchemes:
     OAuth2:
@@ -244,7 +254,7 @@ paths:
     patch:
       tags:
         - POI
-      description: Create a new POI
+      description: Update an existing POI
       parameters:
         - name: id
           in: path
@@ -319,3 +329,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/Forbidden'
+  /user:
+    get:
+      tags:
+        - User
+      description: Return all Users
+      responses:
+        200:
+          description: An array of Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /user/{id}:
+    get:
+      tags:
+        - User
+      description: Return the User with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the User to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The User with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"

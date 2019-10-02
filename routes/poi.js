@@ -1,3 +1,5 @@
+const formatUser = require("../utils/format-user");
+
 var express = require("express");
 var router = express.Router();
 var models = require("../models");
@@ -41,11 +43,7 @@ router.get("/", async function(req, res, next) {
 
   let decoratedPOIs = await Promise.all(decoratePOIsPromises);
 
-  let response = {
-    data: decoratedPOIs
-  };
-
-  res.send(response);
+  res.send(decoratedPOIs);
 });
 
 // Get a specific POI
@@ -71,7 +69,11 @@ router.post("/", async function(req, res, next) {
 });
 
 // Update a POI
-router.patch("/:id", isCreator, async function(req, res, next) {
+router.patch("/:id", isCreator({ model: "POI" }), async function(
+  req,
+  res,
+  next
+) {
   let poiID = +req.params.id;
   let poiBody = req.body;
 
@@ -85,7 +87,11 @@ router.patch("/:id", isCreator, async function(req, res, next) {
 });
 
 // Delete a POI
-router.delete("/:id", isCreator, async function(req, res, next) {
+router.delete("/:id", isCreator({ model: "POI" }), async function(
+  req,
+  res,
+  next
+) {
   let poiToDelete = await models.POI.findByPk(+req.params.id, poiOptions);
 
   let deletedPOI = await poiToDelete.destroy();
@@ -104,11 +110,6 @@ function decoratePOI(poi, poiCreator) {
 
   return {
     ...plainPOI,
-    Creator: {
-      id: poiCreator.user_id,
-      name: poiCreator.name,
-      picture: poiCreator.picture,
-      email: poiCreator.email
-    }
+    Creator: formatUser(poiCreator)
   };
 }
