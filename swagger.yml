@@ -363,7 +363,7 @@ paths:
               $ref: "#/components/schemas/Status"
             examples:
               partial:
-                description: Only give the ID of the status
+                description: Only give the ID of the Status
                 value: 1
               full:
                 description: Give a full Status object
@@ -513,6 +513,61 @@ paths:
                       name: Thomas Shelby
                       picture: https://placehold.it/200?text=Thomas
                       email: t.shelby@pb.co.uk
+      responses:
+        200:
+          description: The updated POI
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/POI"
+        404:
+          description: The given POI was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        403:
+          description: The edition of this POI is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+  /poi/{id}/gpx-file:
+    patch:
+      tags:
+        - POI
+      description: Affect a GPXFile to the POI with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to update with a new GPXFile
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GPXFile"
+            examples:
+              partial:
+                description: Only give the ID of the GPXFile
+                value: 1
+              full:
+                description: Give a full GPXFile object
+                value:
+                  id: 1
+                  path: '/path/to/gpx/file/on/server/file.gpx'
+                  url: 'http://server.mapathon.com/gpx/download/file.gpx'
+                  createdAt: '2019-10-01T11:18:16.622Z'
+                  updatedAt: '2019-10-01T11:18:16.622Z'
+                  Creator:
+                    id: 'github|123456'
+                    name: 'Thomas Shelby'
+                    picture: 'https://placehold.it/200?text=Thomas'
+                    email: 't.shelby@pb.co.uk'
+
       responses:
         200:
           description: The updated POI
@@ -1014,47 +1069,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GPXFile"
-    patch:
-      tags:
-        - GPXFile
-      description: Update an existing GPXFile
-      parameters:
-        - name: id
-          in: path
-          description: The ID of the GPXFile to update
-          required: true
-          schema:
-            type: number
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/GPXFile"
-            examples:
-              basic:
-                description: Only update a given field
-                value:
-                  name: 'TODO - CHANGE THIS!!!'
-      responses:
-        200:
-          description: The updated GPXFile
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GPXFile"
-        404:
-          description: The given GPXFile was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/NotFound'
-        403:
-          description: The edition of this GPXFile is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/Forbidden'
+#    patch:
+#      tags:
+#        - GPXFile
+#      description: Update an existing GPXFile
+#      parameters:
+#        - name: id
+#          in: path
+#          description: The ID of the GPXFile to update
+#          required: true
+#          schema:
+#            type: number
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: "#/components/schemas/GPXFile"
+#            examples:
+#              basic:
+#                description: Only update a given field
+#                value:
+#                  name: 'TODO - CHANGE THIS!!!'
+#      responses:
+#        200:
+#          description: The updated GPXFile
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/GPXFile"
+#        404:
+#          description: The given GPXFile was not found
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/responses/NotFound'
+#        403:
+#          description: The edition of this GPXFile is not allowed
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/responses/Forbidden'
     delete:
       tags:
         - GPXFile

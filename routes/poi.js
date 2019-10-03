@@ -55,6 +55,12 @@ router.patch(
   crud.associateInstances(modelName, "Tag", modelOptions)
 );
 
+router.patch(
+  "/:id/gpx-file",
+  isCreator({ model: modelName }),
+  crud.associateInstance(modelName, "GPXFile", modelOptions)
+);
+
 router.delete(
   "/:id",
   isCreator({ model: modelName }),

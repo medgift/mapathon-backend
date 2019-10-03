@@ -68,11 +68,11 @@ router.post("/", upload.single("file"), async (req, res, next) => {
   res.send(createdGPXFile);
 });
 
-router.patch(
+/*router.patch(
   "/:id",
   isCreator({ model: modelName }),
   crud.updateInstance(modelName, modelOptions)
-);
+);*/
 
 router.delete(
   "/:id",
