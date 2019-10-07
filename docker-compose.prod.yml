@@ -37,6 +37,9 @@ services:
       - "traefik.docker.network=prod"
       - "traefik.frontend.rule=Host:${TRAEFIK_URL_PHPMYADMIN}"
       - "traefik.enable=true"
+    networks:
+      - default
+      - prod
     environment:
       PMA_ARBITRARY: 1
       PMA_HOST: db
