@@ -1174,7 +1174,7 @@ paths:
     get:
       tags:
         - GPXFile
-      description: Download the GPXFile with the given filename
+      description: Download the GPXFile with the given filename (such URLs are generated when POSTing new GPX files)
       parameters:
         - name: filename
           in: path
