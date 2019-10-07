@@ -9,6 +9,13 @@ router.get("/", async function(req, res, next) {
 
   let formattedUsers = users.map(user => formatter.formatUser(user));
 
+  // Filter users by group
+  if (req.query.group) {
+    formattedUsers = formattedUsers.filter(
+      user => user.group === +req.query.group
+    );
+  }
+
   res.send(formattedUsers);
 });
 

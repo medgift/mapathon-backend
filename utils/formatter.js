@@ -1,4 +1,5 @@
 const auth0UserInfo = require("../auth0/user-info");
+const fetch = require("node-fetch");
 
 async function formatInstancesWithCreator(instances) {
   let usersById = await auth0UserInfo.getAllUsersById();
@@ -32,7 +33,8 @@ function formatUser(user) {
       id: user.user_id,
       name: user.name,
       picture: user.picture,
-      email: user.email
+      email: user.email,
+      group: user.group
     };
   } else {
     return null;

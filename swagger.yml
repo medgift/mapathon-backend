@@ -605,6 +605,8 @@ paths:
       tags:
         - User
       description: Return all Users
+      parameters:
+        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of Users
