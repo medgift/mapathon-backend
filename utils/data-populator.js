@@ -41,7 +41,6 @@ async function populateData(dataFile, modelName) {
       }
     }
   } catch (err) {
-    console.log(err);
     console.log(`Already populated ${modelName} `);
   }
 }

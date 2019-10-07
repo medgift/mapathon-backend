@@ -18,7 +18,7 @@ services:
       - db
 
   db:
-    image: mysql:5.7
+    image: mariadb
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
@@ -26,8 +26,30 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
     networks:
       - default
+    volumes:
+      - db-volume:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    labels:
+      - "traefik.backend=${TRAEFIK_BACKEND_PHPMYADMIN}"
+      - "traefik.docker.network=prod"
+      - "traefik.frontend.rule=Host:${TRAEFIK_URL_PHPMYADMIN}"
+      - "traefik.enable=true"
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: db
+      PMA_PORT: 3306
+    volumes:
+      - /sessions
+    depends_on:
+      - db
 
 networks:
   prod:
     external: true
     name: ${TRAEFIK_NETWORK}
+
+volumes:
+  db-volume:
