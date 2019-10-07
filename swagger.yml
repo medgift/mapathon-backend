@@ -55,6 +55,9 @@ components:
           type: string
           format: "date-time"
           example: 2019-09-19T13:08:54.042Z
+        group:
+          type: number
+          example: 2
     POI:
       allOf:
         - $ref: "#/components/schemas/BaseModel"
@@ -102,18 +105,18 @@ components:
       properties:
         id:
           type: string
-          example: 'github|123456'
+          example: "github|123456"
         name:
           type: string
-          example: 'Thomas Shelby'
+          example: "Thomas Shelby"
         picture:
           type: string
           format: uri
-          example: 'https://placehold.it/200?text=Thomas'
+          example: "https://placehold.it/200?text=Thomas"
         email:
           type: string
           format: email
-          example: 't.shelby@pb.co.uk'
+          example: "t.shelby@pb.co.uk"
     Status:
       allOf:
         - $ref: "#/components/schemas/BaseModel"
@@ -181,19 +184,27 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
     Forbidden:
       description: Forbidden
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
     BadRequest:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
+  parameters:
+    groupParam:
+      name: group
+      in: query
+      description: Filter the data by student group (1-4)
+      required: false
+      schema:
+        type: number
 security:
   - OAuth2:
       - openid
@@ -203,6 +214,8 @@ paths:
       tags:
         - POI
       description: Return all POIs
+      parameters:
+        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of POIs
@@ -226,19 +239,21 @@ paths:
               minimal:
                 description: The minimum required payload for creating a new POI (Creator is based on the user sending the request)
                 value:
-                  name: 'ABC'
-                  description: 'Description of ABC'
+                  name: "ABC"
+                  description: "Description of ABC"
                   lat: 46.1234567
                   lng: 7.1234567
+                  group: 0
               complete:
                 description: A fully configured POI
                 value:
-                  name: 'XYZ'
-                  description: 'Description of XYZ'
+                  name: "XYZ"
+                  description: "Description of XYZ"
                   lat: 46.2345678
                   lng: 7.2345678
-                  image: 'http://image/related/to/the/poi.png'
-                  url: 'http://link.related.to/the/poi'
+                  image: "http://image/related/to/the/poi.png"
+                  url: "http://link.related.to/the/poi"
+                  group: 0
       responses:
         200:
           description: The newly created POI
@@ -286,12 +301,12 @@ paths:
               partial:
                 description: Only update a given field
                 value:
-                  name: 'Updated Name'
+                  name: "Updated Name"
               full:
                 description: Full POI object supplied
                 value:
-                  name: 'ABC'
-                  description: 'Description of ABC'
+                  name: "ABC"
+                  description: "Description of ABC"
                   lat: 46.1234567
                   lng: 7.1234567
       responses:
@@ -306,13 +321,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The edition of this POI is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
     delete:
       tags:
         - POI
@@ -336,13 +351,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The deletion of this POI is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /poi/{id}/status:
     patch:
       tags:
@@ -369,14 +384,14 @@ paths:
                 description: Give a full Status object
                 value:
                   id: 1
-                  name: 'Not Verified'
-                  createdAt: '2019-10-02T15:14:15.852Z'
-                  updatedAt: '2019-10-02T15:14:15.852Z'
+                  name: "Not Verified"
+                  createdAt: "2019-10-02T15:14:15.852Z"
+                  updatedAt: "2019-10-02T15:14:15.852Z"
                   Creator:
-                    id: 'github|123456'
-                    name: 'Thomas Shelby'
-                    picture: 'https://placehold.it/200?text=Thomas'
-                    email: 't.shelby@pb.co.uk'
+                    id: "github|123456"
+                    name: "Thomas Shelby"
+                    picture: "https://placehold.it/200?text=Thomas"
+                    email: "t.shelby@pb.co.uk"
 
       responses:
         200:
@@ -390,13 +405,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The edition of this POI is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /poi/{id}/category:
     patch:
       tags:
@@ -420,8 +435,7 @@ paths:
             examples:
               partial:
                 description: Only give an array of Category IDs
-                value:
-                  [3, 4]
+                value: [3, 4]
               full:
                 description: Give an array of full Category Objects
                 value:
@@ -457,13 +471,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The edition of this POI is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /poi/{id}/tag:
     patch:
       tags:
@@ -487,8 +501,7 @@ paths:
             examples:
               partial:
                 description: Only give an array of Tag IDs
-                value:
-                  [1]
+                value: [1]
               full:
                 description: Give an array of full Category Objects
                 value:
@@ -525,13 +538,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The edition of this POI is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /poi/{id}/gpx-file:
     patch:
       tags:
@@ -558,15 +571,15 @@ paths:
                 description: Give a full GPXFile object
                 value:
                   id: 1
-                  path: '/path/to/gpx/file/on/server/file.gpx'
-                  url: 'http://server.mapathon.com/gpx/download/file.gpx'
-                  createdAt: '2019-10-01T11:18:16.622Z'
-                  updatedAt: '2019-10-01T11:18:16.622Z'
+                  path: "/path/to/gpx/file/on/server/file.gpx"
+                  url: "http://server.mapathon.com/gpx/download/file.gpx"
+                  createdAt: "2019-10-01T11:18:16.622Z"
+                  updatedAt: "2019-10-01T11:18:16.622Z"
                   Creator:
-                    id: 'github|123456'
-                    name: 'Thomas Shelby'
-                    picture: 'https://placehold.it/200?text=Thomas'
-                    email: 't.shelby@pb.co.uk'
+                    id: "github|123456"
+                    name: "Thomas Shelby"
+                    picture: "https://placehold.it/200?text=Thomas"
+                    email: "t.shelby@pb.co.uk"
 
       responses:
         200:
@@ -580,13 +593,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The edition of this POI is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /user:
     get:
       tags:
@@ -625,6 +638,8 @@ paths:
       tags:
         - Status
       description: Return all Statuses
+      parameters:
+        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of Statuses
@@ -648,7 +663,8 @@ paths:
               minimal:
                 description: The minimum required payload for creating a new Status (Creator is based on the user sending the request)
                 value:
-                  name: 'Validation In Progress'
+                  name: "Validation In Progress"
+                  group: 0
       responses:
         200:
           description: The newly created Status
@@ -696,7 +712,7 @@ paths:
               basic:
                 description: Only update a given field
                 value:
-                  name: 'Updated Status Name'
+                  name: "Updated Status Name"
       responses:
         200:
           description: The updated Status
@@ -709,13 +725,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The edition of this Status is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
     delete:
       tags:
         - Status
@@ -739,18 +755,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The deletion of this Status is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /category:
     get:
       tags:
         - Category
       description: Return all Categories
+      parameters:
+        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of Categories
@@ -774,12 +792,14 @@ paths:
               minimal:
                 description: The minimum required payload for creating a new Category (Creator is based on the user sending the request)
                 value:
-                  name: 'Pub'
+                  name: "Pub"
+                  group: 0
               complete:
                 description: A more complete payload for creating a new Category (Creator is based on the user sending the request)
                 value:
-                  name: 'Pub'
-                  image: 'http://logo.for.a/pub.png'
+                  name: "Pub"
+                  image: "http://logo.for.a/pub.png"
+                  group: 0
       responses:
         200:
           description: The newly created Category
@@ -827,7 +847,7 @@ paths:
               basic:
                 description: Only update a given field
                 value:
-                  name: 'Updated Category Name'
+                  name: "Updated Category Name"
       responses:
         200:
           description: The updated Category
@@ -840,13 +860,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The edition of this Category is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
     delete:
       tags:
         - Category
@@ -870,18 +890,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The deletion of this Category is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /tag:
     get:
       tags:
         - Tag
       description: Return all Tags
+      parameters:
+        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of Tags
@@ -905,13 +927,15 @@ paths:
               minimal:
                 description: The minimum required payload for creating a new Tag (Creator is based on the user sending the request)
                 value:
-                  name: 'Recent'
+                  name: "Recent"
+                  group: 0
               complete:
                 description: A more complete payload for creating a new Tag (Creator is based on the user sending the request)
                 value:
-                  name: 'Recent'
-                  image: 'http://logo.for/recent.png'
-                  color: '#ffcc00'
+                  name: "Recent"
+                  image: "http://logo.for/recent.png"
+                  color: "#ffcc00"
+                  group: 0
       responses:
         200:
           description: The newly created Tag
@@ -959,7 +983,7 @@ paths:
               basic:
                 description: Only update a given field
                 value:
-                  name: 'Updated Tag Name'
+                  name: "Updated Tag Name"
       responses:
         200:
           description: The updated Tag
@@ -972,13 +996,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The edition of this Tag is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
     delete:
       tags:
         - Tag
@@ -1002,18 +1026,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The deletion of this Tag is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /gpx-file:
     get:
       tags:
         - GPXFile
       description: Return all GPX Files
+      parameters:
+        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of GPXFiles
@@ -1027,6 +1053,8 @@ paths:
       tags:
         - GPXFile
       description: Create a new GPXFile
+      parameters:
+        - $ref: "#/components/parameters/groupParam"
       requestBody:
         required: true
         content:
@@ -1049,7 +1077,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/BadRequest'
+                $ref: "#/components/responses/BadRequest"
   /gpx-file/{id}:
     get:
       tags:
@@ -1069,47 +1097,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GPXFile"
-#    patch:
-#      tags:
-#        - GPXFile
-#      description: Update an existing GPXFile
-#      parameters:
-#        - name: id
-#          in: path
-#          description: The ID of the GPXFile to update
-#          required: true
-#          schema:
-#            type: number
-#      requestBody:
-#        required: true
-#        content:
-#          application/json:
-#            schema:
-#              $ref: "#/components/schemas/GPXFile"
-#            examples:
-#              basic:
-#                description: Only update a given field
-#                value:
-#                  name: 'TODO - CHANGE THIS!!!'
-#      responses:
-#        200:
-#          description: The updated GPXFile
-#          content:
-#            application/json:
-#              schema:
-#                $ref: "#/components/schemas/GPXFile"
-#        404:
-#          description: The given GPXFile was not found
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/responses/NotFound'
-#        403:
-#          description: The edition of this GPXFile is not allowed
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/responses/Forbidden'
+    #    patch:
+    #      tags:
+    #        - GPXFile
+    #      description: Update an existing GPXFile
+    #      parameters:
+    #        - name: id
+    #          in: path
+    #          description: The ID of the GPXFile to update
+    #          required: true
+    #          schema:
+    #            type: number
+    #      requestBody:
+    #        required: true
+    #        content:
+    #          application/json:
+    #            schema:
+    #              $ref: "#/components/schemas/GPXFile"
+    #            examples:
+    #              basic:
+    #                description: Only update a given field
+    #                value:
+    #                  name: 'TODO - CHANGE THIS!!!'
+    #      responses:
+    #        200:
+    #          description: The updated GPXFile
+    #          content:
+    #            application/json:
+    #              schema:
+    #                $ref: "#/components/schemas/GPXFile"
+    #        404:
+    #          description: The given GPXFile was not found
+    #          content:
+    #            application/json:
+    #              schema:
+    #                $ref: '#/components/responses/NotFound'
+    #        403:
+    #          description: The edition of this GPXFile is not allowed
+    #          content:
+    #            application/json:
+    #              schema:
+    #                $ref: '#/components/responses/Forbidden'
     delete:
       tags:
         - GPXFile
@@ -1133,13 +1161,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/NotFound'
+                $ref: "#/components/responses/NotFound"
         403:
           description: The deletion of this GPXFile is not allowed
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Forbidden'
+                $ref: "#/components/responses/Forbidden"
   /gpx-file/download/{filename}:
     get:
       tags:

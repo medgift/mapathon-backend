@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       path: DataTypes.STRING,
       url: DataTypes.STRING,
+      group: DataTypes.INTEGER,
       creatorId: DataTypes.STRING
     },
     {}
