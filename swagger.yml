@@ -236,7 +236,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/POI"
+                  allOf:
+                    - $ref: "#/components/schemas/POI"
+                  properties:
+                    liked:
+                      type: boolean
+
     post:
       tags:
         - POI
@@ -291,7 +296,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/POI"
+                allOf:
+                  - $ref: "#/components/schemas/POI"
+                properties:
+                  liked:
+                    type: boolean
         404:
           $ref: "#/components/responses/NotFound"
     patch:
