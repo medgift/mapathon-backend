@@ -185,18 +185,30 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+          example:
+            error:
+              status: 404
+              title: The specified resource was not found
     Forbidden:
       description: Forbidden
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+          example:
+            error:
+              status: 403
+              title: Forbidden
     BadRequest:
       description: Bad Request
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+          example:
+            error:
+              status: 400
+              title: Bad Request
   parameters:
     groupParam:
       name: group
@@ -280,6 +292,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/POI"
+        404:
+          $ref: "#/components/responses/NotFound"
     patch:
       tags:
         - POI
@@ -317,17 +331,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/POI"
         404:
-          description: The given POI was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The edition of this POI is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
     delete:
       tags:
         - POI
@@ -347,17 +353,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/POI"
         404:
-          description: The given POI was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The deletion of this POI is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
   /poi/{id}/status:
     patch:
       tags:
@@ -401,17 +399,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/POI"
         404:
-          description: The given POI was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The edition of this POI is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
   /poi/{id}/category:
     patch:
       tags:
@@ -467,17 +457,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/POI"
         404:
-          description: The given POI was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The edition of this POI is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
   /poi/{id}/tag:
     patch:
       tags:
@@ -534,17 +516,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/POI"
         404:
-          description: The given POI was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The edition of this POI is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
   /poi/{id}/gpx-file:
     patch:
       tags:
@@ -589,17 +563,72 @@ paths:
               schema:
                 $ref: "#/components/schemas/POI"
         404:
-          description: The given POI was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The edition of this POI is not allowed
+          $ref: "#/components/responses/Forbidden"
+  /poi/{id}/like:
+    patch:
+      tags:
+        - POI
+      description: Like a POI
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to like (user is automatically determined)
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: A message confirming the POI was liked
           content:
             application/json:
               schema:
-                $ref: "#/components/responses/Forbidden"
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Liked
+        201:
+          description: A message confirming the POI was liked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Liked
+        404:
+          $ref: "#/components/responses/NotFound"
+  /poi/{id}/unlike:
+    patch:
+      tags:
+        - POI
+      description: Remove a Like from a POI
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the POI to unlike (user is automatically determined)
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: A message confirming the POI was unliked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Unliked
+        404:
+          $ref: "#/components/responses/NotFound"
   /user:
     get:
       tags:
@@ -723,17 +752,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Status"
         404:
-          description: The given Status was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The edition of this Status is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
     delete:
       tags:
         - Status
@@ -753,17 +774,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Status"
         404:
-          description: The given Status was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The deletion of this Status is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
   /category:
     get:
       tags:
@@ -858,17 +871,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Category"
         404:
-          description: The given Category was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The edition of this Category is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
     delete:
       tags:
         - Category
@@ -888,17 +893,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Category"
         404:
-          description: The given Category was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The deletion of this Category is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
   /tag:
     get:
       tags:
@@ -994,17 +991,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Tag"
         404:
-          description: The given Tag was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The edition of this Tag is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
     delete:
       tags:
         - Tag
@@ -1024,17 +1013,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Tag"
         404:
-          description: The given Tag was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The deletion of this Tag is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
   /gpx-file:
     get:
       tags:
@@ -1075,11 +1056,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/GPXFile"
         400:
-          description: The given file was not a valid GPX file
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/BadRequest"
+          $ref: "#/components/responses/BadRequest"
   /gpx-file/{id}:
     get:
       tags:
@@ -1099,47 +1076,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GPXFile"
-    #    patch:
-    #      tags:
-    #        - GPXFile
-    #      description: Update an existing GPXFile
-    #      parameters:
-    #        - name: id
-    #          in: path
-    #          description: The ID of the GPXFile to update
-    #          required: true
-    #          schema:
-    #            type: number
-    #      requestBody:
-    #        required: true
-    #        content:
-    #          application/json:
-    #            schema:
-    #              $ref: "#/components/schemas/GPXFile"
-    #            examples:
-    #              basic:
-    #                description: Only update a given field
-    #                value:
-    #                  name: 'TODO - CHANGE THIS!!!'
-    #      responses:
-    #        200:
-    #          description: The updated GPXFile
-    #          content:
-    #            application/json:
-    #              schema:
-    #                $ref: "#/components/schemas/GPXFile"
-    #        404:
-    #          description: The given GPXFile was not found
-    #          content:
-    #            application/json:
-    #              schema:
-    #                $ref: '#/components/responses/NotFound'
-    #        403:
-    #          description: The edition of this GPXFile is not allowed
-    #          content:
-    #            application/json:
-    #              schema:
-    #                $ref: '#/components/responses/Forbidden'
     delete:
       tags:
         - GPXFile
@@ -1159,17 +1095,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/GPXFile"
         404:
-          description: The given GPXFile was not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         403:
-          description: The deletion of this GPXFile is not allowed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/Forbidden"
   /gpx-file/download/{filename}:
     get:
       tags:

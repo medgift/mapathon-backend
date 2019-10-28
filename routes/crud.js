@@ -1,7 +1,7 @@
 const queries = require("../utils/queries");
 const errorHandler = require("../utils/error-handler");
 
-module.exports.getAll = function(model, options) {
+module.exports.getAll = function(model, options, additionalFields) {
   return async function(req, res, next) {
     let opts = { ...options };
     if (req.query.group) {
@@ -9,17 +9,34 @@ module.exports.getAll = function(model, options) {
       opts.where.group = +req.query.group;
     }
 
-    const instances = await queries.getAll(model, opts);
+    let instances = await queries.getAll(model, opts);
+
+    if (additionalFields) {
+      instances = await addAdditionalFields(
+        instances,
+        req.user.sub,
+        additionalFields
+      );
+    }
+
     res.send(instances);
   };
 };
 
-module.exports.getInstance = function(model, options) {
+module.exports.getInstance = function(model, options, additionalFields) {
   return async function(req, res, next) {
-    const instance = await queries.getInstance(model, +req.params.id, options);
+    let instance = await queries.getInstance(model, +req.params.id, options);
 
     if (!instance) {
       return errorHandler.sendNotFound(res);
+    }
+
+    if (additionalFields) {
+      instance = await addAdditionalFields(
+        instance,
+        req.user.sub,
+        additionalFields
+      );
     }
 
     res.send(instance);
@@ -96,3 +113,38 @@ module.exports.deleteInstance = function(model, options) {
     res.send(deletedInstance);
   };
 };
+
+async function addAdditionalFields(instances, userId, additionalFields) {
+  let result;
+
+  // If we gave multiple instances, do it for each one
+  if (Array.isArray(instances)) {
+    result = Promise.all(
+      instances.map(async instance =>
+        addFields(instance, userId, additionalFields)
+      )
+    );
+  } else {
+    let instance = { ...instances };
+    result = await addFields(instance, userId, additionalFields);
+  }
+
+  return result;
+}
+
+async function addFields(instance, userId, additionalFields) {
+  let modifiedInstance = { ...instance };
+
+  for (let key in additionalFields) {
+    let additionalFieldName = key;
+    let additionalFieldValue = await (async () =>
+      additionalFields[key](userId, instance))();
+
+    modifiedInstance = {
+      ...modifiedInstance,
+      [additionalFieldName]: additionalFieldValue
+    };
+  }
+
+  return modifiedInstance;
+}
