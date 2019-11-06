@@ -21,8 +21,9 @@ const storage = multer.diskStorage({
 
 const gpxFilter = (req, file, cb) => {
   if (
-    file.mimetype !== "application/gpx+xml" ||
-    !file.originalname.endsWith(".gpx")
+    !file.originalname.endsWith(".gpx") &&
+    (file.mimetype !== "application/gpx+xml" ||
+      file.mimetype !== "application/octet-stream")
   ) {
     cb(null, false);
   } else {
@@ -52,6 +53,7 @@ router.get("/download/:filename", async (req, res, next) => {
 });
 
 router.post("/", upload.single("file"), async (req, res, next) => {
+  console.log(`Going to upload file ${JSON.stringify(req.file)}`);
   if (!req.file) return errorHandler.sendBadRequest(res);
 
   const gpxFileObject = {
