@@ -241,6 +241,8 @@ paths:
                   properties:
                     liked:
                       type: boolean
+                    likes:
+                      type: number
 
     post:
       tags:
@@ -301,6 +303,8 @@ paths:
                 properties:
                   liked:
                     type: boolean
+                  likes:
+                    type: number
         404:
           $ref: "#/components/responses/NotFound"
     patch:

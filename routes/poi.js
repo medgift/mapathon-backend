@@ -33,6 +33,12 @@ let additionalFields = {
       where: { POIId: poi.id, userId: userId }
     });
     return like !== null;
+  },
+  likes: async (userId, poi) => {
+    let likes = await models.Like.count({
+      where: { POIID: poi.id }
+    });
+    return likes;
   }
 };
 
