@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Mapathon API
-  version: 1.0.0
+  version: 1.1.0
   description: REST API for the Mapathon project (645-1)
 servers:
   - description: Local server
@@ -53,9 +53,6 @@ components:
           type: string
           format: "date-time"
           example: 2019-09-19T13:08:54.042Z
-        group:
-          type: number
-          example: 2
     POI:
       allOf:
         - $ref: "#/components/schemas/BaseModel"
@@ -185,14 +182,6 @@ components:
             error:
               status: 400
               title: Bad Request
-  parameters:
-    groupParam:
-      name: group
-      in: query
-      description: Filter the data by student group (1-4)
-      required: false
-      schema:
-        type: number
 security:
   - OAuth2:
       - openid
@@ -238,7 +227,6 @@ paths:
                   description: "Description of ABC"
                   lat: 46.1234567
                   lng: 7.1234567
-                  group: 0
               complete:
                 description: A fully configured POI
                 value:
@@ -248,7 +236,6 @@ paths:
                   lng: 7.2345678
                   image: "http://image/related/to/the/poi.png"
                   url: "http://link.related.to/the/poi"
-                  group: 0
       responses:
         200:
           description: The newly created POI
@@ -625,7 +612,6 @@ paths:
                 description: The minimum required payload for creating a new Status (Creator is based on the user sending the request)
                 value:
                   name: "Validation In Progress"
-                  group: 0
       responses:
         200:
           description: The newly created Status
@@ -738,13 +724,11 @@ paths:
                 description: The minimum required payload for creating a new Category (Creator is based on the user sending the request)
                 value:
                   name: "Pub"
-                  group: 0
               complete:
                 description: A more complete payload for creating a new Category (Creator is based on the user sending the request)
                 value:
                   name: "Pub"
                   image: "http://logo.for.a/pub.png"
-                  group: 0
       responses:
         200:
           description: The newly created Category

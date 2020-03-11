@@ -4,10 +4,6 @@ const errorHandler = require("../utils/error-handler");
 module.exports.getAll = function(model, options, additionalFields) {
   return async function(req, res, next) {
     let opts = { ...options };
-    if (req.query.group) {
-      if (!opts.where) opts.where = {};
-      opts.where.group = +req.query.group;
-    }
 
     let instances = await queries.getAll(model, opts);
 

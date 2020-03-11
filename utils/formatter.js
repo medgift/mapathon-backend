@@ -33,8 +33,7 @@ function formatUser(user) {
       id: user.user_id,
       name: user.name,
       picture: user.picture,
-      email: user.email,
-      group: user.group
+      email: user.email
     };
   } else {
     return null;

@@ -29,10 +29,6 @@ async function getAllUsers() {
     const userURL = `${process.env.AUTH0_OAUTH2_AUDIENCE}users`;
     users = await requestWithToken(userURL);
 
-    const usersGroup = await getUsersGroup();
-
-    users = users.map(user => ({ ...user, group: usersGroup[user.user_id] }));
-
     cache.set("/users", users);
   }
 
@@ -61,10 +57,6 @@ async function getUserInfo(auth0_userid) {
     const userURL = `${process.env.AUTH0_OAUTH2_AUDIENCE}users?q=user_id:${auth0_userid}`;
     const searchResults = await requestWithToken(userURL);
 
-    let userGroup = await getUserGroup(auth0_userid);
-
-    user = { ...searchResults[0], group: userGroup };
-
     cache.set(`/users/${auth0_userid}`, user);
   }
 
@@ -72,48 +64,6 @@ async function getUserInfo(auth0_userid) {
 }
 
 module.exports.getUserInfo = getUserInfo;
-
-async function getUsersGroup() {
-  const roleIDs = [
-    "rol_ZFNAjXGVZQJ83VOi",
-    "rol_60vcXwQTdb4d2pGc",
-    "rol_jS9esdLkYG4VtSUh",
-    "rol_KJG2Le1YuUcR7ap9",
-    "rol_lHghYL0NUpTM5tRm"
-  ];
-
-  const roleURLs = roleIDs.map(
-    roleID => `${process.env.AUTH0_OAUTH2_AUDIENCE}roles/${roleID}/users`
-  );
-
-  const rolesWithUsers = await Promise.all(
-    roleURLs.map(roleURL => requestWithToken(roleURL))
-  );
-
-  const userGroupMap = rolesWithUsers.reduce(
-    (userGroupMap, roleUsers, groupIndex) => {
-      roleUsers.map(user => {
-        userGroupMap[user.user_id] = groupIndex;
-      });
-
-      return userGroupMap;
-    },
-    {}
-  );
-
-  return userGroupMap;
-}
-
-async function getUserGroup(auth0_userid) {
-  const roleURL = `${process.env.AUTH0_OAUTH2_AUDIENCE}users/${auth0_userid}/roles`;
-
-  const userRoles = await requestWithToken(roleURL);
-
-  let groupID;
-  if (userRoles.length > 0) groupID = +userRoles[0].name.replace("Group ", "");
-
-  return groupID;
-}
 
 async function requestWithToken(url) {
   let accessToken = await getManagementAccessToken();

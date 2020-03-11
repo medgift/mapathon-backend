@@ -61,10 +61,6 @@ router.post("/", upload.single("file"), async (req, res, next) => {
     url: `${req.protocol}://${req.headers.host}${process.env.UPLOAD_BASE_URL}/${req.file.filename}`
   };
 
-  if (req.query.group) {
-    gpxFileObject.group = +req.query.group;
-  }
-
   let createdGPXFile = await queries.createInstance(
     "GPXFile",
     gpxFileObject,
