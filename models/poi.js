@@ -31,9 +31,6 @@ module.exports = (sequelize, DataTypes) => {
     POI.belongsToMany(models.Category, {
       through: "POICategory"
     });
-    POI.belongsToMany(models.Tag, {
-      through: "POITag"
-    });
     POI.belongsTo(models.Status, { foreignKey: "statusId" });
     POI.belongsTo(models.GPXFile, { foreignKey: "gpxFileId" });
   };

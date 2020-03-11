@@ -16,10 +16,6 @@ let modelOptions = {
     {
       model: models.Category,
       through: { attributes: [] }
-    },
-    {
-      model: models.Tag,
-      through: { attributes: [] }
     }
   ],
   attributes: {
@@ -64,12 +60,6 @@ router.patch(
   "/:id/category",
   isCreator({ model: modelName }),
   crud.associateInstances(modelName, "Category", modelOptions)
-);
-
-router.patch(
-  "/:id/tag",
-  isCreator({ model: modelName }),
-  crud.associateInstances(modelName, "Tag", modelOptions)
 );
 
 router.patch(

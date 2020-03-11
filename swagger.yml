@@ -17,8 +17,6 @@ tags:
     description: All routes concerning the Status of a POI (listing, creating, updating, etc.)
   - name: Category
     description: All routes concerning the Categories of a POI (listing, creating, updating, etc.)
-  - name: Tag
-    description: All routes concerning the Tags of a POI (listing, creating, updating, etc.)
   - name: GPXFile
     description: All routes concerning GPX Files associated with a POI (listing, creating, updating, etc.)
 components:
@@ -94,10 +92,6 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Category"
-            Tags:
-              type: array
-              items:
-                $ref: "#/components/schemas/Tag"
             GPXFile:
               $ref: "#/components/schemas/GPXFile"
     User:
@@ -142,24 +136,6 @@ components:
             image:
               type: string
               example: https://fast.hevs.ch/temp/map-icons/company.png
-            Creator:
-              $ref: "#/components/schemas/User"
-    Tag:
-      allOf:
-        - $ref: "#/components/schemas/BaseModel"
-        - type: object
-          required:
-            - name
-          properties:
-            name:
-              type: string
-              example: Popular
-            color:
-              type: string
-              example: "#c0c999"
-            image:
-              type: string
-              example: https://fast.hevs.ch/temp/map-tags/star.svg
             Creator:
               $ref: "#/components/schemas/User"
     GPXFile:
@@ -457,65 +433,6 @@ paths:
                     image: https://fast.hevs.ch/temp/map-icons/restaurant.png
                     createdAt: 2019-10-02T13:30:52.055Z
                     updatedAt: 2019-10-02T13:30:52.055Z
-                    Creator:
-                      id: github|123456
-                      name: Thomas Shelby
-                      picture: https://placehold.it/200?text=Thomas
-                      email: t.shelby@pb.co.uk
-      responses:
-        200:
-          description: The updated POI
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/POI"
-        404:
-          $ref: "#/components/responses/NotFound"
-        403:
-          $ref: "#/components/responses/Forbidden"
-  /poi/{id}/tag:
-    patch:
-      tags:
-        - POI
-      description: Affect Tags to the POI with the given ID
-      parameters:
-        - name: id
-          in: path
-          description: The ID of the POI to update with new Tags
-          required: true
-          schema:
-            type: number
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/Tag"
-            examples:
-              partial:
-                description: Only give an array of Tag IDs
-                value: [1]
-              full:
-                description: Give an array of full Category Objects
-                value:
-                  - id: 1,
-                    name: New
-                    image: https://fast.hevs.ch/temp/map-tags/loader.svg
-                    color: green
-                    createdAt: 2019-10-02T16:50:52.055Z
-                    updatedAt: 2019-10-02T16:50:52.055Z
-                    Creator:
-                      id: github|123456
-                      name: Thomas Shelby
-                      picture: https://placehold.it/200?text=Thomas
-                      email: t.shelby@pb.co.uk
-                  - id: 2
-                    name: Popular
-                    image: https://fast.hevs.ch/temp/map-tags/star.svg
-                    createdAt: 2019-10-02T13:40:52.055Z
-                    updatedAt: 2019-10-02T13:40:52.055Z
                     Creator:
                       id: github|123456
                       name: Thomas Shelby
@@ -905,126 +822,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Category"
-        404:
-          $ref: "#/components/responses/NotFound"
-        403:
-          $ref: "#/components/responses/Forbidden"
-  /tag:
-    get:
-      tags:
-        - Tag
-      description: Return all Tags
-      parameters:
-        - $ref: "#/components/parameters/groupParam"
-      responses:
-        200:
-          description: An array of Tags
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Tag"
-    post:
-      tags:
-        - Tag
-      description: Create a new Tag
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Tag"
-            examples:
-              minimal:
-                description: The minimum required payload for creating a new Tag (Creator is based on the user sending the request)
-                value:
-                  name: "Recent"
-                  group: 0
-              complete:
-                description: A more complete payload for creating a new Tag (Creator is based on the user sending the request)
-                value:
-                  name: "Recent"
-                  image: "http://logo.for/recent.png"
-                  color: "#ffcc00"
-                  group: 0
-      responses:
-        200:
-          description: The newly created Tag
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Tag"
-  /tag/{id}:
-    get:
-      tags:
-        - Tag
-      description: Return the Tag with the given ID
-      parameters:
-        - name: id
-          in: path
-          description: The ID of the Tag to fetch
-          required: true
-          schema:
-            type: number
-      responses:
-        200:
-          description: The Tag with the given ID
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Tag"
-    patch:
-      tags:
-        - Tag
-      description: Update an existing Tag
-      parameters:
-        - name: id
-          in: path
-          description: The ID of the Tag to update
-          required: true
-          schema:
-            type: number
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Tag"
-            examples:
-              basic:
-                description: Only update a given field
-                value:
-                  name: "Updated Tag Name"
-      responses:
-        200:
-          description: The updated Tag
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Tag"
-        404:
-          $ref: "#/components/responses/NotFound"
-        403:
-          $ref: "#/components/responses/Forbidden"
-    delete:
-      tags:
-        - Tag
-      description: Delete the Tag with the given ID
-      parameters:
-        - name: id
-          in: path
-          description: The ID of the Tag to delete
-          required: true
-          schema:
-            type: number
-      responses:
-        200:
-          description: The deleted Tag
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Tag"
         404:
           $ref: "#/components/responses/NotFound"
         403:
