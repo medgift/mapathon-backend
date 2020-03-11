@@ -191,8 +191,6 @@ paths:
       tags:
         - POI
       description: Return all POIs
-      parameters:
-        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of POIs
@@ -551,8 +549,6 @@ paths:
       tags:
         - User
       description: Return all Users
-      parameters:
-        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of Users
@@ -586,8 +582,6 @@ paths:
       tags:
         - Status
       description: Return all Statuses
-      parameters:
-        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of Statuses
@@ -698,8 +692,6 @@ paths:
       tags:
         - Category
       description: Return all Categories
-      parameters:
-        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of Categories
@@ -815,8 +807,6 @@ paths:
       tags:
         - GPXFile
       description: Return all GPX Files
-      parameters:
-        - $ref: "#/components/parameters/groupParam"
       responses:
         200:
           description: An array of GPXFiles
@@ -830,8 +820,6 @@ paths:
       tags:
         - GPXFile
       description: Create a new GPXFile
-      parameters:
-        - $ref: "#/components/parameters/groupParam"
       requestBody:
         required: true
         content:
