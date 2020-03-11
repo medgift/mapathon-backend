@@ -13,7 +13,7 @@ services:
     environment:
       - "DB_HOST=mysql://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}"
     volumes:
-      - $UPLOAD_DIRECTORY_SERVER:/data/mapathon
+      - uploads-volume:/data/mapathon
     depends_on:
       - db
 
@@ -56,3 +56,4 @@ networks:
 
 volumes:
   db-volume:
+  uploads-volume:
