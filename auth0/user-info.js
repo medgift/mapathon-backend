@@ -26,7 +26,9 @@ async function getAllUsers() {
   let users = cache.get("/users");
 
   if (users === undefined) {
-    const userURL = `${process.env.AUTH0_OAUTH2_AUDIENCE}users`;
+    const roleID = process.env.AUTH0_ROLE_ID;
+
+    const userURL = `${process.env.AUTH0_OAUTH2_AUDIENCE}roles/${roleID}/users`;
     users = await requestWithToken(userURL);
 
     cache.set("/users", users);
@@ -57,7 +59,16 @@ async function getUserInfo(auth0_userid) {
     const userURL = `${process.env.AUTH0_OAUTH2_AUDIENCE}users?q=user_id:${auth0_userid}`;
     const searchResults = await requestWithToken(userURL);
 
-    cache.set(`/users/${auth0_userid}`, user);
+    if (searchResults.length > 0) {
+      user = searchResults[0];
+
+      const rolesURL = `${process.env.AUTH0_OAUTH2_AUDIENCE}users/${user.user_id}/roles`;
+      const roles = await requestWithToken(rolesURL);
+
+      user.roles = roles;
+
+      cache.set(`/users/${auth0_userid}`, user);
+    }
   }
 
   return user;

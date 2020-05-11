@@ -5,6 +5,7 @@ const errorHandler = require("../utils/error-handler");
 const formatter = require("../utils/formatter");
 
 router.get("/", async function(req, res, next) {
+  // Get all users (for group's role)
   let users = await auth0UserInfo.getAllUsers();
 
   let formattedUsers = users.map(user => formatter.formatUser(user));

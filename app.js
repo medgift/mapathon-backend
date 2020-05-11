@@ -5,11 +5,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
-const swaggerUi = require("swagger-ui-express");
-const YAML = require("yamljs");
 const jwt = require("express-jwt");
 const jwks = require("jwks-rsa");
-const basicAuth = require("express-basic-auth");
 
 const poiRouter = require("./routes/poi");
 const userRouter = require("./routes/user");
@@ -30,7 +27,7 @@ app.use(cors());
 // set up JWT checking
 const authConfig = {
   domain: "mapathon.eu.auth0.com",
-  audience: "https://backend.mapathon.ehealth.hevs.ch"
+  audience: process.env.AUTH0_BACKEND_AUDIENCE
 };
 
 const jwtCheck = jwt({
