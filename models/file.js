@@ -1,7 +1,7 @@
 "use strict";
 module.exports = (sequelize, DataTypes) => {
-  const GPXFile = sequelize.define(
-    "GPXFile",
+  const File = sequelize.define(
+    "File",
     {
       path: DataTypes.STRING,
       url: DataTypes.STRING,
@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  GPXFile.associate = function(models) {
+  File.associate = function(models) {
     // associations can be defined here
-    GPXFile.hasOne(models.POI, { foreignKey: "gpxFileId" });
+    File.hasOne(models.POI, { foreignKey: "fileId" });
   };
-  return GPXFile;
+  return File;
 };

@@ -15,7 +15,7 @@ const poiRouter = require("./routes/poi");
 const userRouter = require("./routes/user");
 const statusRouter = require("./routes/status");
 const categoryRouter = require("./routes/category");
-const gpxFileRouter = require("./routes/gpx-file");
+const fileRouter = require("./routes/file");
 
 const models = require("./models");
 
@@ -59,36 +59,7 @@ app.use("/poi", jwtCheck, poiRouter);
 app.use("/user", jwtCheck, userRouter);
 app.use("/status", jwtCheck, statusRouter);
 app.use("/category", jwtCheck, categoryRouter);
-app.use("/gpx-file", jwtCheck, gpxFileRouter);
-
-// server Swagger Doc
-let uiOptions = {
-  swaggerOptions: {
-    //supportedSubmitMethods: []
-    oauth: {
-      clientId: process.env.OAUTH2_CLIENT_ID,
-      clientSecret: process.env.OAUTH2_CLIENT_SECRET,
-      scopeSeparator: ",",
-      additionalQueryStringParams: {}
-    }
-  }
-};
-
-const swaggerDocument = YAML.load("./swagger.yml");
-
-let basicAuthMiddleware = basicAuth({
-  users: {
-    [process.env.BASIC_AUTH_USER]: process.env.BASIC_AUTH_PASS
-  },
-  challenge: true
-});
-
-app.use(
-  "/",
-  basicAuthMiddleware,
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDocument, uiOptions)
-);
+app.use("/file", jwtCheck, fileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

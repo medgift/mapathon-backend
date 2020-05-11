@@ -19,7 +19,7 @@ let modelOptions = {
     }
   ],
   attributes: {
-    exclude: ["statusId", "gpxFileId"]
+    exclude: ["statusId", "fileId"]
   }
 };
 
@@ -63,9 +63,9 @@ router.patch(
 );
 
 router.patch(
-  "/:id/gpx-file",
+  "/:id/file",
   isCreator({ model: modelName }),
-  crud.associateInstance(modelName, "GPXFile", modelOptions)
+  crud.associateInstance(modelName, "File", modelOptions)
 );
 
 router.patch("/:id/like", async (req, res, next) => {

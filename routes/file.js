@@ -19,24 +19,13 @@ const storage = multer.diskStorage({
   }
 });
 
-const gpxFilter = (req, file, cb) => {
-  if (
-    !file.originalname.endsWith(".gpx") &&
-    (file.mimetype !== "application/gpx+xml" ||
-      file.mimetype !== "application/octet-stream")
-  ) {
-    cb(null, false);
-  } else {
-    cb(null, true);
-  }
-};
-const upload = multer({ storage: storage, fileFilter: gpxFilter });
+const upload = multer({ storage: storage });
 
 const isCreator = require("../middleware/isCreator");
 
 const crud = require("./crud");
 
-let modelName = "GPXFile";
+let modelName = "File";
 
 let modelOptions = {};
 
@@ -45,29 +34,29 @@ router.get("/", crud.getAll(modelName, modelOptions));
 router.get("/:id", crud.getInstance(modelName, modelOptions));
 
 router.get("/download/:filename", async (req, res, next) => {
-  let foundGPXFile = await models.GPXFile.findOne({
+  let foundFile = await models.File.findOne({
     where: { path: `${process.env.UPLOAD_DIRECTORY}/${req.params.filename}` }
   });
 
-  res.sendFile(foundGPXFile.path);
+  res.sendFile(foundFile.path);
 });
 
 router.post("/", upload.single("file"), async (req, res, next) => {
   console.log(`Going to upload file ${JSON.stringify(req.file)}`);
   if (!req.file) return errorHandler.sendBadRequest(res);
 
-  const gpxFileObject = {
+  const fileObject = {
     path: req.file.path,
     url: `${req.protocol}://${req.headers.host}${process.env.UPLOAD_BASE_URL}/${req.file.filename}`
   };
 
-  let createdGPXFile = await queries.createInstance(
-    "GPXFile",
-    gpxFileObject,
+  let createdFile = await queries.createInstance(
+    "File",
+    fileObject,
     req.user.sub
   );
 
-  res.send(createdGPXFile);
+  res.send(createdFile);
 });
 
 /*router.patch(

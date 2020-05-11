@@ -17,8 +17,8 @@ tags:
     description: All routes concerning the Status of a POI (listing, creating, updating, etc.)
   - name: Category
     description: All routes concerning the Categories of a POI (listing, creating, updating, etc.)
-  - name: GPXFile
-    description: All routes concerning GPX Files associated with a POI (listing, creating, updating, etc.)
+  - name: File
+    description: All routes concerning Files associated with a POI (listing, creating, updating, etc.)
 components:
   securitySchemes:
     OAuth2:
@@ -89,8 +89,8 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Category"
-            GPXFile:
-              $ref: "#/components/schemas/GPXFile"
+            File:
+              $ref: "#/components/schemas/File"
     User:
       type: object
       properties:
@@ -135,7 +135,7 @@ components:
               example: https://fast.hevs.ch/temp/map-icons/company.png
             Creator:
               $ref: "#/components/schemas/User"
-    GPXFile:
+    File:
       allOf:
         - $ref: "#/components/schemas/BaseModel"
         - type: object
@@ -145,10 +145,10 @@ components:
           properties:
             path:
               type: string
-              example: /path/to/the/gpx/file/on/the/server.gpx
+              example: /path/to/the/file/on/the/server
             url:
               type: string
-              example: https://my.server.com/url/of/the/gpx/file.gpx
+              example: https://my.server.com/url/of/the/file
             Creator:
               $ref: "#/components/schemas/User"
   responses:
@@ -434,15 +434,15 @@ paths:
           $ref: "#/components/responses/NotFound"
         403:
           $ref: "#/components/responses/Forbidden"
-  /poi/{id}/gpx-file:
+  /poi/{id}/file:
     patch:
       tags:
         - POI
-      description: Affect a GPXFile to the POI with the given ID
+      description: Affect a File to the POI with the given ID
       parameters:
         - name: id
           in: path
-          description: The ID of the POI to update with a new GPXFile
+          description: The ID of the POI to update with a new File
           required: true
           schema:
             type: number
@@ -451,17 +451,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GPXFile"
+              $ref: "#/components/schemas/File"
             examples:
               partial:
-                description: Only give the ID of the GPXFile
+                description: Only give the ID of the File
                 value: 1
               full:
-                description: Give a full GPXFile object
+                description: Give a full File object
                 value:
                   id: 1
-                  path: "/path/to/gpx/file/on/server/file.gpx"
-                  url: "http://server.mapathon.com/gpx/download/file.gpx"
+                  path: "/path/to/file/on/server/file"
+                  url: "http://server.mapathon.com/download/file"
                   createdAt: "2019-10-01T11:18:16.622Z"
                   updatedAt: "2019-10-01T11:18:16.622Z"
                   Creator:
@@ -802,24 +802,24 @@ paths:
           $ref: "#/components/responses/NotFound"
         403:
           $ref: "#/components/responses/Forbidden"
-  /gpx-file:
+  /file:
     get:
       tags:
-        - GPXFile
-      description: Return all GPX Files
+        - File
+      description: Return all Files
       responses:
         200:
-          description: An array of GPXFiles
+          description: An array of Files
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GPXFile"
+                  $ref: "#/components/schemas/File"
     post:
       tags:
-        - GPXFile
-      description: Create a new GPXFile
+        - File
+      description: Create a new File
       requestBody:
         required: true
         content:
@@ -832,69 +832,69 @@ paths:
                   format: binary
       responses:
         200:
-          description: The newly created GPXFile
+          description: The newly created File
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GPXFile"
+                $ref: "#/components/schemas/File"
         400:
           $ref: "#/components/responses/BadRequest"
-  /gpx-file/{id}:
+  /file/{id}:
     get:
       tags:
-        - GPXFile
-      description: Return the GPXFile with the given ID
+        - File
+      description: Return the File with the given ID
       parameters:
         - name: id
           in: path
-          description: The ID of the GPXFile to fetch
+          description: The ID of the File to fetch
           required: true
           schema:
             type: number
       responses:
         200:
-          description: The GPXFile with the given ID
+          description: The File with the given ID
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GPXFile"
+                $ref: "#/components/schemas/File"
     delete:
       tags:
-        - GPXFile
-      description: Delete the GPXFile with the given ID
+        - File
+      description: Delete the File with the given ID
       parameters:
         - name: id
           in: path
-          description: The ID of the GPXFile to delete
+          description: The ID of the File to delete
           required: true
           schema:
             type: number
       responses:
         200:
-          description: The deleted GPXFile
+          description: The deleted File
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GPXFile"
+                $ref: "#/components/schemas/File"
         404:
           $ref: "#/components/responses/NotFound"
         403:
           $ref: "#/components/responses/Forbidden"
-  /gpx-file/download/{filename}:
+  /file/download/{filename}:
     get:
       tags:
-        - GPXFile
-      description: Download the GPXFile with the given filename (such URLs are generated when POSTing new GPX files)
+        - File
+      description: Download the File with the given filename (such URLs are generated when POSTing new files)
       parameters:
         - name: filename
           in: path
-          description: The filename of the GPXFile to download
+          description: The filename of the File to download
           required: true
           schema:
             type: string
       responses:
         200:
-          description: The requested GPX File
+          description: The requested File
           content:
             application/gps+xml:
               schema:
