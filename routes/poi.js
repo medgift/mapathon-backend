@@ -13,6 +13,7 @@ let modelName = "POI";
 let modelOptions = {
   include: [
     models.Status,
+    models.File,
     {
       model: models.Category,
       through: { attributes: [] }
